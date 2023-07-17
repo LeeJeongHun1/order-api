@@ -63,7 +63,7 @@ public class SecurityConfig {
                 .and()
                 .formLogin().disable()
                 .authorizeRequests()
-//                .antMatchers("/v2/auth/**").permitAll()
+//                .antMatchers("/api/products/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .anonymous().authenticationFilter(new AnonymousAuthenticationFilter("ROLE_ANONYMOUS"));
