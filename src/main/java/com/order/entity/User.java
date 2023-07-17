@@ -25,7 +25,6 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Entity(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@DynamicUpdate
 @DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
 public class User {

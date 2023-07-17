@@ -1,4 +1,4 @@
-package com.order.users;
+package com.order.service;
 
 import com.order.config.CustomUser;
 import com.order.config.CustomUserDetailsService;
