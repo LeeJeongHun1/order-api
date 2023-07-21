@@ -1,4 +1,4 @@
-package com.order.config;
+package com.order.security;
 
 import lombok.Builder;
 import lombok.Data;

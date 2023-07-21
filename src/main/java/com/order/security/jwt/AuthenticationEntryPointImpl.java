@@ -1,6 +1,5 @@
-package com.order.config.jwt;
+package com.order.security.jwt;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

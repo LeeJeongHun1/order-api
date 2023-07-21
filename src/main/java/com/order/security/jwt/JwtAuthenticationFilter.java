@@ -1,11 +1,12 @@
-package com.order.config.jwt;
+package com.order.security.jwt;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.net.HttpHeaders;
-import com.order.config.CustomUserDetailsService;
+import com.order.exception.UnauthorizedException;
+import com.order.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,6 +26,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * 토큰 유효성 검증
@@ -81,6 +84,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .setAuthentication(usernamePasswordAuthxToken);
 
             } catch (BadCredentialsException e) {
+                log.info("?????????????");
 //                responseWriter(response,  new UnauthorizedException("AUTH.TOKEN_INVALID"));
                 return;
             } catch (JWTVerificationException e) {
@@ -116,12 +120,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //        response.setCharacterEncoding("utf-8");
 //        response.setStatus(customException.getHttpStatus().value());
 //
-//        ExceptionResponse errorResponse = new ExceptionResponse();
-//        errorResponse.setErrorCode(customException.getErrorCode());
-//        errorResponse.setErrorMessage(messageManager.getMessage(customException.getErrorCode()));
-//        errorResponse.setTimestamp(Instant.now());
-//        new ObjectMapper().registerModule(new JavaTimeModule())
-//                .writeValue(response.getWriter(), errorResponse);
 //    }
 
     @Override

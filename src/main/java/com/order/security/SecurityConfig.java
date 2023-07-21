@@ -1,9 +1,10 @@
-package com.order.config;
+package com.order.security;
 
-import com.order.config.jwt.AccessDeniedHandlerImpl;
-import com.order.config.jwt.AuthenticationEntryPointImpl;
-import com.order.config.jwt.JwtAuthenticationFilter;
-import com.order.config.jwt.JwtProvider;
+import com.order.security.jwt.AccessDeniedHandlerImpl;
+import com.order.security.jwt.AuthenticationEntryPointImpl;
+import com.order.security.jwt.JwtAuthenticationFilter;
+import com.order.security.jwt.JwtProvider;
+import com.order.entity.Role;
 import com.order.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -63,8 +63,11 @@ public class SecurityConfig {
                 .and()
                 .formLogin().disable()
                 .authorizeRequests()
-//                .antMatchers("/api/products/**").authenticated()
-                .anyRequest().permitAll()
+                .antMatchers("/api/products/**").permitAll()
+                .antMatchers("/api/users/login").permitAll()
+                .antMatchers("/api/**").hasRole(Role.USER.name())
+//                .antMatchers("/api/**").authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .anonymous().authenticationFilter(new AnonymousAuthenticationFilter("ROLE_ANONYMOUS"));
                 //.addFilter(new CustomAuthenticationFilter(authenticationManager)) //각 소셜과 이메일 로그인 시 처리 고민

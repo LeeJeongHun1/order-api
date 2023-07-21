@@ -1,4 +1,4 @@
-package com.order.config;
+package com.order.security;
 
 import com.order.entity.Role;
 import com.order.entity.User;
@@ -62,7 +62,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private Set<SimpleGrantedAuthority> getAuthority(User user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority(Role.USER.name().toUpperCase()));
+        authorities.add(new SimpleGrantedAuthority(Role.USER.value()));
         return authorities;
     }
 

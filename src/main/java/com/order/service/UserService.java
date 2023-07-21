@@ -1,8 +1,8 @@
 package com.order.service;
 
-import com.order.config.CustomUser;
-import com.order.config.CustomUserDetailsService;
-import com.order.config.jwt.JwtProvider;
+import com.order.security.CustomUser;
+import com.order.security.CustomUserDetailsService;
+import com.order.security.jwt.JwtProvider;
 import com.order.dto.user.LoginRequest;
 import com.order.dto.user.LoginResult;
 import com.order.dto.user.UserDto;
@@ -29,7 +29,7 @@ public class UserService {
     public LoginResult login(LoginRequest loginRequest) {
         CustomUser customUser = customUserDetailsService.loadUserByUsername(loginRequest.getPrincipal());
         if (customUser == null) {
-            throw new NotFoundException("Bad credential");
+            throw new NotFoundException("Bad principal");
         }
 
         if (!passwordEncoder.matches(loginRequest.getCredentials(), customUser.getPassword())) {
@@ -51,6 +51,7 @@ public class UserService {
                 customUser.getCreateAt());
         user.afterLoginSuccess();
         userRepository.save(user);
+
         String accessToken = jwtProvider.createAccessToken(authentication);
         return new LoginResult(accessToken, user);
     }

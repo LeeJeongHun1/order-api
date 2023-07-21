@@ -2,7 +2,6 @@ package com.order.products;
 
 import com.order.dto.product.ProductDto;
 import com.order.service.ProductService;
-import com.order.utils.ApiUtils;
 import com.order.utils.ApiUtils.ApiResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,7 @@
 package com.order.entity;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -26,6 +27,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @Entity(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 public class User {
 
@@ -95,32 +97,8 @@ public class User {
     lastLoginAt = now();
   }
 
-  public Long getSeq() {
-    return seq;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public String getPasswd() {
-    return passwd;
-  }
-
-  public int getLoginCount() {
-    return loginCount;
-  }
-
   public Optional<LocalDateTime> getLastLoginAt() {
     return ofNullable(lastLoginAt);
-  }
-
-  public LocalDateTime getCreateAt() {
-    return createAt;
   }
 
   @Override

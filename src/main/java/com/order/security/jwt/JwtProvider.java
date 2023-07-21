@@ -1,4 +1,4 @@
-package com.order.config.jwt;
+package com.order.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

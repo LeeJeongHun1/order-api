@@ -1,6 +1,6 @@
 package com.order.users;
 
-import com.order.config.CustomUser;
+import com.order.security.CustomUser;
 import com.order.dto.user.LoginRequest;
 import com.order.dto.user.UserDto;
 import com.order.service.UserService;
@@ -31,7 +31,5 @@ public class UserRestController {
             @AuthenticationPrincipal CustomUser customUser
     ) {
         return success(userService.getUser(customUser.getUserId()));
-//                        .map(UserDto::new)
-//                        .orElseThrow(() -> new NotFoundException("Could nof found user for " + customUser.getUserId()))
     }
 }

@@ -51,6 +51,7 @@ public class GeneralExceptionHandler {
             IllegalArgumentException.class,
             IllegalStateException.class,
             ConstraintViolationException.class,
+            BadRequestException.class,
             MethodArgumentNotValidException.class
     })
     public ResponseEntity<?> handleBadRequestException(Exception e) {
