@@ -1,5 +1,6 @@
 package com.order.orders;
 
+import com.order.dto.order.OrderDto;
 import com.order.security.CustomUser;
 import com.order.service.OrderService;
 import com.order.utils.ApiUtils.ApiResult;
@@ -7,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderRestController {
 
     private final OrderService orderService;
-  // TODO findAll, findById, accept, reject, shipping, complete 메소드 구현이 필요합니다.
 
     @GetMapping("/")
     public ApiResult<?> getOrders(
@@ -28,9 +25,33 @@ public class OrderRestController {
     }
 
     @GetMapping("/{id}")
-    public void getOrder(
+    public ApiResult<OrderDto> getOrder(
             @AuthenticationPrincipal CustomUser customUser,
             @PathVariable Long id) {
+        return orderService.getOrder(id, customUser.getUserId());
+    }
 
+    @PatchMapping("/{id}/accept")
+    public void accept(
+            @AuthenticationPrincipal CustomUser customUser,
+            @PathVariable Long id) {
+    }
+
+    @PatchMapping("/{id}/reject")
+    public void reject(
+            @AuthenticationPrincipal CustomUser customUser,
+            @PathVariable Long id) {
+    }
+
+    @PatchMapping("/{id}/shipping")
+    public void shipping(
+            @AuthenticationPrincipal CustomUser customUser,
+            @PathVariable Long id) {
+    }
+
+    @PatchMapping("/{id}/complete")
+    public void complete(
+            @AuthenticationPrincipal CustomUser customUser,
+            @PathVariable Long id) {
     }
 }

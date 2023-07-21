@@ -2,6 +2,7 @@ package com.order.service;
 
 import com.order.dto.order.OrderDto;
 import com.order.entity.Order;
+import com.order.exception.NotFoundException;
 import com.order.repository.order.OrderRepository;
 import com.order.utils.ApiUtils;
 import com.order.utils.ApiUtils.ApiResult;
@@ -29,4 +30,12 @@ public class OrderService {
                 .collect(Collectors.toList());
         return success(list);
     }
+
+    public ApiResult<OrderDto> getOrder(Long orderId, Long userId) {
+        OrderDto orderDto = orderRepository.findBySeqAndUserSeq(orderId, userId)
+                .map(OrderDto::new)
+                .orElseThrow(() -> new NotFoundException("Could not found order for " + orderId));
+        return success(orderDto);
+    }
+
 }
