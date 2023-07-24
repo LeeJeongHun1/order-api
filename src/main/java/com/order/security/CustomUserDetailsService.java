@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         Set<SimpleGrantedAuthority> authorities = getAuthority(user);
         CustomUser customUser = new CustomUser();
-        customUser.setUserId(user.getSeq());
+        customUser.setUserId(user.getId());
         customUser.setEmail(user.getEmail());
         customUser.setUsername(user.getName());
         customUser.setLoginCount(user.getLoginCount());

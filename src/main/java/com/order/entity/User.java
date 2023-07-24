@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -33,7 +32,7 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long seq;
+  private Long id;
 
   private String name;
 
@@ -50,10 +49,10 @@ public class User {
   @CreatedDate
   private LocalDateTime createAt;
 
-  public User(Long seq, String name, String email, String passwd, int loginCount, LocalDateTime lastLoginAt, LocalDateTime createAt) {
+  public User(Long id, String name, String email, String passwd, int loginCount, LocalDateTime lastLoginAt, LocalDateTime createAt) {
     checkNotNull(email, "email must be provided");
     checkArgument(isNotEmpty(name), "name must be provided");
-    this.seq = seq;
+    this.id = id;
     this.name = name;
     this.email = email;
     this.passwd = passwd;
@@ -62,7 +61,7 @@ public class User {
     this.createAt = createAt;
   }
 
-  public User(Long seq, String name, String email, String passwd, int loginCount) {
+  public User(Long id, String name, String email, String passwd, int loginCount) {
     checkArgument(isNotEmpty(name), "name must be provided");
     checkArgument(
       name.length() >= 1 && name.length() <= 10,
@@ -71,7 +70,7 @@ public class User {
     checkNotNull(email, "email must be provided");
     checkNotNull(passwd, "password must be provided");
 
-    this.seq = seq;
+    this.id = id;
     this.name = name;
     this.email = email;
     this.passwd = passwd;
@@ -106,18 +105,18 @@ public class User {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     User user = (User) o;
-    return Objects.equals(seq, user.seq);
+    return Objects.equals(id, user.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(seq);
+    return Objects.hash(id);
   }
 
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-      .append("seq", seq)
+      .append("seq", id)
       .append("name", name)
       .append("email", email)
       .append("password", "[PROTECTED]")

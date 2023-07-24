@@ -9,7 +9,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -31,18 +30,18 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_seq")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "product_seq")
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "review_seq")
+    @JoinColumn(name = "review_id")
     private Review review;
     private State state;
     private String requestMsg;
@@ -53,12 +52,12 @@ public class Order {
     private LocalDateTime createAt;
 
 
-    public Order(Long seq, User user, Product product, Review review, State state, String requestMsg, String rejectMsg, LocalDateTime completedAt, LocalDateTime rejectedAt, LocalDateTime createAt) {
+    public Order(Long id, User user, Product product, Review review, State state, String requestMsg, String rejectMsg, LocalDateTime completedAt, LocalDateTime rejectedAt, LocalDateTime createAt) {
         checkNotNull(user, "email must be provided");
         checkNotNull(product, "email must be provided");
         checkNotNull(review, "email must be provided");
 
-        this.seq = seq;
+        this.id = id;
         this.user = user;
         this.product = product;
         this.review = review;
@@ -70,3 +69,4 @@ public class Order {
         this.createAt = createAt;
     }
 }
+

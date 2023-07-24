@@ -14,7 +14,7 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 @AllArgsConstructor
 public class ReviewDto {
 
-  private Long seq;
+  private Long id;
 
 //  private UserDto user;
 
@@ -32,7 +32,7 @@ public class ReviewDto {
 
 
   public ReviewDto(Review review) {
-    this.productId = review.getProduct().getSeq();
+    this.productId = review.getProduct().getId();
     copyProperties(review, this);
   }
 }
