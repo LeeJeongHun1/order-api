@@ -22,7 +22,7 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository {
                 .innerJoin(order.user).fetchJoin()
                 .leftJoin(order.review).fetchJoin()
                 .innerJoin(order.product).fetchJoin()
-                .where(order.user.seq.eq(userSeq))
+                .where(order.user.id.eq(userSeq))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .fetch();
     }

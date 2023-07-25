@@ -16,7 +16,6 @@ public class OrderDto {
     private Long id;
     private Long productId;
     private ReviewDto review;
-    private Order.State state;
     private String requestMsg;
     private String rejectMsg;
     private LocalDateTime completedAt;

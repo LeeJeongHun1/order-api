@@ -9,25 +9,17 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@Entity(name = "orders")
+@Entity(name = "order")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
-
-    public enum State {
-        REQUESTED,
-        ACCEPTED,
-        SHIPPING,
-        COMPLETED,
-        REJECTED
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,10 +32,12 @@ public class Order {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @OneToMany(mappedBy = "order")
+    private List<OrderDetail> details = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "review_id")
     private Review review;
-    private State state;
     private String requestMsg;
     private String rejectMsg;
     private LocalDateTime completedAt;
@@ -52,7 +46,7 @@ public class Order {
     private LocalDateTime createAt;
 
 
-    public Order(Long id, User user, Product product, Review review, State state, String requestMsg, String rejectMsg, LocalDateTime completedAt, LocalDateTime rejectedAt, LocalDateTime createAt) {
+    public Order(Long id, User user, Product product, Review review, String requestMsg, String rejectMsg, LocalDateTime completedAt, LocalDateTime rejectedAt, LocalDateTime createAt) {
         checkNotNull(user, "email must be provided");
         checkNotNull(product, "email must be provided");
         checkNotNull(review, "email must be provided");
@@ -61,7 +55,6 @@ public class Order {
         this.user = user;
         this.product = product;
         this.review = review;
-        this.state = state;
         this.requestMsg = requestMsg;
         this.rejectMsg = rejectMsg;
         this.completedAt = completedAt;

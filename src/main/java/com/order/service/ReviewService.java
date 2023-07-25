@@ -27,10 +27,10 @@ public class ReviewService {
     public ApiResult<ReviewDto> review(Long orderId, Long userSeq, ReviewReqDto reviewReqDto) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Could not found order for " + orderId));
-        if (order.getState() != Order.State.COMPLETED) {
-            throw new BadRequestException(
-                    String.format("Could not write review for order %d because state(REQUESTED) is not allowed", orderId));
-        }
+//        if (order.getState() != Order.State.COMPLETED) {
+//            throw new BadRequestException(
+//                    String.format("Could not write review for order %d because state(REQUESTED) is not allowed", orderId));
+//        }
         // 중복 리뷰
         if (Objects.nonNull(order.getReview())) {
             throw new BadRequestException(

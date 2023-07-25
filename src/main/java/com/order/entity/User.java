@@ -23,7 +23,7 @@ import static java.time.LocalDateTime.now;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
-@Entity(name = "users")
+@Entity(name = "user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
 @Getter
