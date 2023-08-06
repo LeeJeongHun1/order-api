@@ -1,10 +1,15 @@
 package com.order.utils;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
 public class ApiUtils {
 
     public static <T> ApiResult<T> success(T response) {
+        return new ApiResult<>(true, response, null);
+    }
+
+    public static <T> ApiResult<T> success(T response, HttpHeaders httpHeaders) {
         return new ApiResult<>(true, response, null);
     }
 

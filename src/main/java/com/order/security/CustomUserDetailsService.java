@@ -1,6 +1,5 @@
 package com.order.security;
 
-import com.order.entity.Role;
 import com.order.entity.User;
 import com.order.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +61,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private Set<SimpleGrantedAuthority> getAuthority(User user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority(Role.USER.value()));
+        user.getRoles().forEach(
+                role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleType()))
+        );
         return authorities;
     }
 

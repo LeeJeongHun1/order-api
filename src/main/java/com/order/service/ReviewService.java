@@ -32,13 +32,13 @@ public class ReviewService {
 //                    String.format("Could not write review for order %d because state(REQUESTED) is not allowed", orderId));
 //        }
         // 중복 리뷰
-        if (Objects.nonNull(order.getReview())) {
-            throw new BadRequestException(
-                    String.format("Could not write review for order %d because have already written", orderId));
-        }
+//        if (Objects.nonNull(order.getReview())) {
+//            throw new BadRequestException(
+//                    String.format("Could not write review for order %d because have already written", orderId));
+//        }
         Review review = Review.builder()
                 .user(order.getUser())
-                .product(order.getProduct())
+//                .product(order.getProduct())
                 .content(reviewReqDto.getContent())
                 .build();
         Review save = reviewRepository.save(review);

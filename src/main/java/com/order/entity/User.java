@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -43,11 +44,19 @@ public class User {
 
   private int loginCount;
 
+  @OneToMany(mappedBy = "user")
+  private List<Role> roles;
+
   @LastModifiedDate
   private LocalDateTime lastLoginAt;
 
   @CreatedDate
   private LocalDateTime createAt;
+
+  public User(Long id) {
+    checkNotNull(id, "id must be provided");
+    this.id = id;
+  }
 
   public User(Long id, String name, String email, String passwd, int loginCount, LocalDateTime lastLoginAt, LocalDateTime createAt) {
     checkNotNull(email, "email must be provided");
@@ -75,15 +84,7 @@ public class User {
     this.email = email;
     this.passwd = passwd;
     this.loginCount = loginCount;
-//    this.lastLoginAt = lastLoginAt;
-//    this.createAt = defaultIfNull(createAt, now());
   }
-
-
-//  public String newJwt(Jwt jwt, String[] roles) {
-//    Jwt.Claims claims = Jwt.Claims.of(seq, name, roles);
-//    return jwt.create(claims);
-//  }
 
   public void login(PasswordEncoder passwordEncoder, String credentials) {
     if (!passwordEncoder.matches(credentials, passwd)) {

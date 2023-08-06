@@ -33,6 +33,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-admin:9.1.1'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'com.querydsl:querydsl-jpa'
+    implementation 'org.springdoc:springdoc-openapi-security:1.6.14'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.14'
+    implementation 'org.springdoc:springdoc-openapi-data-rest:1.6.14'
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     compileOnly 'org.projectlombok:lombok'

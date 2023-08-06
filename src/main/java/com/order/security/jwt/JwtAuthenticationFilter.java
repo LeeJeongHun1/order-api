@@ -51,9 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             "/swagger-ui/**",
                             "/api-docs/**",
                             "/static/**",
-                            "/favicon.ico",
-//                            "/v2/auth/**",
-                            "/v2/health"
+                            "/favicon.ico"
                     ));
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

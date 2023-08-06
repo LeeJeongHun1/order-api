@@ -1,26 +1,33 @@
 package com.order.entity;
 
-public enum Role {
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-  USER("ROLE_USER");
+import javax.persistence.*;
 
-  private final String value;
+@Entity(name = "role")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+public class Role {
 
-  Role(String value) {
-    this.value = value;
+  public enum RoleType {
+
+    USER,
+    ADMIN
+
   }
 
-  public String value() {
-    return value;
-  }
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-  public static Role of(String name) {
-    for (Role role : Role.values()) {
-      if (role.name().equalsIgnoreCase(name)) {
-        return role;
-      }
-    }
-    return null;
-  }
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
+
+  @Enumerated(value = EnumType.STRING)
+  private RoleType roleType;
+
 
 }

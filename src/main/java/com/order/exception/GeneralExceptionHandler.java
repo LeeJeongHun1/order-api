@@ -52,6 +52,7 @@ public class GeneralExceptionHandler {
             IllegalStateException.class,
             ConstraintViolationException.class,
             BadRequestException.class,
+            SoldOutException.class,
             MethodArgumentNotValidException.class
     })
     public ResponseEntity<?> handleBadRequestException(Exception e) {

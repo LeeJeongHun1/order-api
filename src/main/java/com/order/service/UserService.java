@@ -31,7 +31,6 @@ public class UserService {
         if (customUser == null) {
             throw new NotFoundException("Bad principal");
         }
-
         if (!passwordEncoder.matches(loginRequest.getCredentials(), customUser.getPassword())) {
             throw new IllegalArgumentException("Bad credential");
         }

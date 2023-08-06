@@ -1,21 +1,26 @@
 package com.order.dto.order;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.order.dto.review.ReviewDto;
 import com.order.entity.Order;
+import com.order.entity.OrderDetail;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.springframework.beans.BeanUtils.copyProperties;
 
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderDto {
 
     private Long id;
-    private Long productId;
-    private ReviewDto review;
+    private List<OrderDetailDto> details = new ArrayList<>();
+    private Double totalAmount;
     private String requestMsg;
     private String rejectMsg;
     private LocalDateTime completedAt;
@@ -24,9 +29,9 @@ public class OrderDto {
     private LocalDateTime createAt;
 
     public OrderDto(Order order) {
-        this.productId = order.getProduct().getId();
-        if (order.getReview() != null)
-            this.review = new ReviewDto(order.getReview());
         copyProperties(order, this);
+        for (OrderDetail detail : order.getDetails()) {
+            this.details.add(new OrderDetailDto(detail));
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.order.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -14,7 +15,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@Entity(name = "order")
+@Entity(name = "`order`")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
@@ -28,16 +29,11 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderDetail> details = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "review_id")
-    private Review review;
+    private Double totalAmount;
+
     private String requestMsg;
     private String rejectMsg;
     private LocalDateTime completedAt;
@@ -46,15 +42,13 @@ public class Order {
     private LocalDateTime createAt;
 
 
-    public Order(Long id, User user, Product product, Review review, String requestMsg, String rejectMsg, LocalDateTime completedAt, LocalDateTime rejectedAt, LocalDateTime createAt) {
-        checkNotNull(user, "email must be provided");
-        checkNotNull(product, "email must be provided");
-        checkNotNull(review, "email must be provided");
+    @Builder(builderClassName = "of", builderMethodName = "of")
+    public Order(Long id, User user, Double totalAmount, String requestMsg, String rejectMsg, LocalDateTime completedAt, LocalDateTime rejectedAt, LocalDateTime createAt) {
+        checkNotNull(user, "user must be provided");
 
         this.id = id;
         this.user = user;
-        this.product = product;
-        this.review = review;
+        this.totalAmount = totalAmount;
         this.requestMsg = requestMsg;
         this.rejectMsg = rejectMsg;
         this.completedAt = completedAt;

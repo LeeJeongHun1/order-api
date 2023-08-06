@@ -16,8 +16,6 @@ public class ReviewDto {
 
   private Long id;
 
-//  private UserDto user;
-
   private Long productId;
 
   private String content;

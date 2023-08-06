@@ -1,5 +1,6 @@
 package com.order.entity;
 
+import com.order.exception.SoldOutException;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static java.time.LocalDateTime.now;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -39,6 +41,11 @@ public class Product {
 
     @CreatedDate
     private LocalDateTime createAt;
+
+    public Product(Long id) {
+        checkNotNull(id, "product id  must be provided");
+        this.id = id;
+    }
 
     public Product(String name, String details) {
         this(null, name, 0, null);
@@ -89,4 +96,10 @@ public class Product {
         this.reviewCount++;
     }
 
+    public void decreaseStock(int quantity) throws SoldOutException {
+        if (stock < quantity) {
+            throw new SoldOutException();
+        }
+        stock -= quantity;
+    }
 }

@@ -1,10 +1,10 @@
 package com.order.security;
 
+import com.order.entity.Role;
 import com.order.security.jwt.AccessDeniedHandlerImpl;
 import com.order.security.jwt.AuthenticationEntryPointImpl;
 import com.order.security.jwt.JwtAuthenticationFilter;
 import com.order.security.jwt.JwtProvider;
-import com.order.entity.Role;
 import com.order.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -64,8 +64,13 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .authorizeRequests()
                 .antMatchers("/api/products/**").permitAll()
+                .antMatchers("/api-docs/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers("/webjars/**").permitAll()
                 .antMatchers("/api/users/login").permitAll()
-                .antMatchers("/api/**").hasRole(Role.USER.name())
+                .antMatchers("/api/**").hasRole(Role.RoleType.USER.name())
 //                .antMatchers("/api/**").authenticated()
                 .anyRequest().authenticated()
                 .and()
