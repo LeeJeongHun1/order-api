@@ -5,6 +5,7 @@ import com.order.dto.review.ReviewDto;
 import com.order.entity.Order;
 import com.order.entity.OrderDetail;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderDto {
 

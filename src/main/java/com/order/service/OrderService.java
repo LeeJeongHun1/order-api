@@ -35,16 +35,12 @@ public class OrderService {
     private final OrderDetailRepository orderDetailRepository;
 
     public ApiResult<List<OrderDto>> getOrders(Long userId, Pageable pageable) {
-        List<OrderDto> list = orderRepository.findAllByUser(userId, pageable)
-                .stream()
-                .map(OrderDto::new)
-                .collect(Collectors.toList());
+        List<OrderDto> list = orderRepository.findAllByUser(userId, pageable);
         return success(list);
     }
 
     public ApiResult<OrderDto> getOrder(Long orderId, Long userId) {
         OrderDto orderDto = orderRepository.findByIdAndUserId(orderId, userId)
-                .map(OrderDto::new)
                 .orElseThrow(() -> new NotFoundException("Could not found order for " + orderId));
         return success(orderDto);
     }
@@ -57,18 +53,6 @@ public class OrderService {
                 .totalAmount(orderRequestDto.getOrderPrice())
                 .build();
         Order savedOrder = orderRepository.save(order);
-
-//        for (OrderProductDto orderProduct : orderRequestDto.getOrderProducts()) {
-//            OrderDetail orderDetail = OrderDetail.of()
-//                    .order(savedOrder)
-//                    .product(new Product(orderProduct.getProductId()))
-//                    .quantity(orderProduct.getQuantity())
-//                    .price(orderProduct.getPrice() * orderProduct.getQuantity())
-//                    .state(OrderDetail.State.REQUESTED)
-//                    .build();
-//            OrderDetail savedOrderDetail = orderDetailRepository.save(orderDetail);
-//            savedOrder.getDetails().add(savedOrderDetail);
-//        }
         for (OrderProductDto orderProduct : orderRequestDto.getOrderProducts()) {
             OrderDetail orderDetail = buildOrderDetail(savedOrder, orderProduct);
             OrderDetail savedOrderDetail = orderDetailRepository.save(orderDetail);
@@ -91,23 +75,6 @@ public class OrderService {
                 .state(OrderDetail.State.REQUESTED)
                 .build();
     }
-
-//    private synchronized void orderValidate(OrderRequestDto orderRequestDto) {
-//        Double totalPrice = 0d;
-//        for (OrderProductDto orderProduct : orderRequestDto.getOrderProducts()) {
-//            Product product = productRepository.findById(orderProduct.getProductId())
-//                    .orElseThrow(() -> new NotFoundException("Could not found product for " + orderProduct.getProductId()));
-//            if (!Objects.equals(product.getPrice(), orderProduct.getPrice())) {
-//                throw new BadRequestException("order price too wrong product for " + orderProduct.getProductId());
-//            }
-//            product.decreaseStock(orderProduct.getQuantity());
-//            totalPrice += orderProduct.getPrice() * orderProduct.getQuantity();
-//        }
-//        // 총 주문금액 체크
-//        if (!totalPrice.equals(orderRequestDto.getOrderPrice())) {
-//            throw new BadRequestException("order total price too wrong");
-//        }
-//    }
 
     private Product findProductById(Long productId) {
         return productRepository.findById(productId)
@@ -133,6 +100,10 @@ public class OrderService {
         if (!totalPrice.equals(orderRequestDto.getOrderPrice())) {
             throw new BadRequestException("Order total price is incorrect");
         }
+    }
+
+    public void accept(Long orderId, Long userId) {
+
     }
 
 }

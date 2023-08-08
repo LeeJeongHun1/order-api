@@ -15,7 +15,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@Entity(name = "`order`")
+@Entity(name = "orders")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
@@ -45,7 +45,6 @@ public class Order {
     @Builder(builderClassName = "of", builderMethodName = "of")
     public Order(Long id, User user, Double totalAmount, String requestMsg, String rejectMsg, LocalDateTime completedAt, LocalDateTime rejectedAt, LocalDateTime createAt) {
         checkNotNull(user, "user must be provided");
-
         this.id = id;
         this.user = user;
         this.totalAmount = totalAmount;

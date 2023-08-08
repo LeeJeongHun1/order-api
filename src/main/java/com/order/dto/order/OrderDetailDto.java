@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@NoArgsConstructor
 public class OrderDetailDto {
 
     private Long id;

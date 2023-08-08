@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +44,8 @@ public class User {
 
   private String passwd;
 
+  @NotNull
+  @ColumnDefault("'0'")
   private int loginCount;
 
   @OneToMany(mappedBy = "user")
@@ -51,6 +55,8 @@ public class User {
   private LocalDateTime lastLoginAt;
 
   @CreatedDate
+  @Column(nullable = false)
+  @ColumnDefault("current_timestamp()")
   private LocalDateTime createAt;
 
   public User(Long id) {
