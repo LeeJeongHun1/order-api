@@ -2,11 +2,16 @@ package com.order.repository.order;
 
 import com.order.dto.order.OrderDetailDto;
 import com.order.dto.order.OrderDto;
+import com.order.dto.product.ProductDto;
+import com.order.dto.review.ReviewDto;
 import com.order.entity.*;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.QBean;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -29,7 +34,8 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository {
                 .from(order)
                 .innerJoin(order.user)
                 .leftJoin(order.details, orderDetail)
-                .leftJoin(product).on(orderDetail.product.eq(product))
+                .leftJoin(orderDetail.review)
+                .leftJoin(orderDetail.product)
                 .where(order.user.id.eq(userId))
                 .offset(pageable.getOffset()).limit(pageable.getPageSize())
                 .transform(groupBy(order.id).list(buildExpressionForOrder()));
@@ -41,19 +47,21 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository {
                 .from(order)
                 .innerJoin(order.user)
                 .leftJoin(order.details, orderDetail)
-                .leftJoin(product).on(orderDetail.product.eq(product))
+                .leftJoin(orderDetail.review)
+                .leftJoin(orderDetail.product)
                 .where(order.user.id.eq(userId)
                         .and(order.id.eq(orderId)))
                 .transform(groupBy(order.id).as(buildExpressionForOrder()));
         return Optional.ofNullable(transform.get(orderId));
     }
 
-    private static QBean<OrderDto> buildExpressionForOrder() {
+    private QBean<OrderDto> buildExpressionForOrder() {
         return Projections.fields(OrderDto.class,
                 order.id,
                 list(Projections.fields(OrderDetailDto.class,
                                 orderDetail.id,
-                                product.name.as("productName"),
+                                Expressions.as(buildExpressionForProduct(), "product"),
+                                Expressions.as(buildExpressionForReview(), "review"),
                                 orderDetail.price,
                                 orderDetail.quantity,
                                 orderDetail.state
@@ -66,5 +74,23 @@ public class OrderCustomRepositoryImpl implements OrderCustomRepository {
                 order.rejectedAt,
                 order.createAt
         );
+    }
+
+    @NotNull
+    private Expression<ReviewDto> buildExpressionForReview() {
+        return Projections.fields(ReviewDto.class,
+                orderDetail.review.id,
+                orderDetail.review.content,
+                orderDetail.review.createAt
+        ).skipNulls();
+    }
+
+    @NotNull
+    private Expression<ProductDto> buildExpressionForProduct() {
+        return Projections.fields(ProductDto.class,
+                orderDetail.product.id,
+                orderDetail.product.name,
+                orderDetail.product.createAt
+        ).skipNulls();
     }
 }

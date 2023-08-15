@@ -23,7 +23,7 @@ public class OrderDetailDto {
 
     private Long id;
     private Long orderId;
-    private String productName;
+    private ProductDto product;
     private ReviewDto review;
     private Double price;
     private Integer quantity;
@@ -34,7 +34,7 @@ public class OrderDetailDto {
     public OrderDetailDto(OrderDetail orderDetail) {
         this.id = orderDetail.getId();
         this.orderId = orderDetail.getOrder().getId();
-        this.productName = orderDetail.getProduct().getName();
+        this.product = new ProductDto(orderDetail.getProduct());
         this.review = orderDetail.getReview() == null ? null : new ReviewDto(orderDetail.getReview());
         this.price = orderDetail.getPrice();
         this.quantity = orderDetail.getQuantity();

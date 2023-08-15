@@ -2,6 +2,7 @@ package com.order.dto.product;
 
 import com.order.entity.Product;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -13,6 +14,7 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ProductDto {
 
   private Long id;

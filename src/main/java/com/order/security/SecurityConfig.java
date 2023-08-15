@@ -76,8 +76,6 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
                 .and()
                 .anonymous().authenticationFilter(new AnonymousAuthenticationFilter("ROLE_ANONYMOUS"));
-                //.addFilter(new CustomAuthenticationFilter(authenticationManager)) //각 소셜과 이메일 로그인 시 처리 고민
-                //.addFilterBefore(new JwtAnonymousAuthenticationFilter(), AnonymousAuthenticationFilter.class)
         http.addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

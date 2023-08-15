@@ -29,12 +29,12 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "review_id")
     private Review review;
     @Column(nullable = false)
@@ -44,6 +44,8 @@ public class OrderDetail {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private State state;
+
+    private LocalDateTime completedAt;
     @CreatedDate
     private LocalDateTime createAt;
 
@@ -57,5 +59,11 @@ public class OrderDetail {
         this.quantity = quantity;
         this.state = state;
     }
+
+    public void complete() {
+        this.state = State.COMPLETED;
+        this.completedAt = LocalDateTime.now();
+    }
+
 }
 

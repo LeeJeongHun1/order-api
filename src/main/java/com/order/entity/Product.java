@@ -92,7 +92,7 @@ public class Product {
         this.name = name;
     }
 
-    public void incrementReviewCount() {
+    public void increaseReviewCount() {
         this.reviewCount++;
     }
 

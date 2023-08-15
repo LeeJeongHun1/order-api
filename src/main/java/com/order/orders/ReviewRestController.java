@@ -13,16 +13,16 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/orders")
+@RequestMapping("api/order-details")
 public class ReviewRestController {
 
     private final ReviewService reviewService;
 
-    @PostMapping(path = "/{id}/review")
+    @PostMapping(path = "/{detailId}/review")
     public ApiUtils.ApiResult<ReviewDto> review(
             @AuthenticationPrincipal CustomUser customUser,
-            @PathVariable Long id,
+            @PathVariable Long detailId,
             @Valid @RequestBody ReviewReqDto reviewReqDto) {
-        return reviewService.review(id, customUser.getUserId(), reviewReqDto);
+        return reviewService.review(detailId, customUser.getUserId(), reviewReqDto);
     }
 }

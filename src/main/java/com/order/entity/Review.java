@@ -41,9 +41,9 @@ public class Review {
 
   @Builder
   public Review(Long id, User user, Product product, String content, LocalDateTime createAt) {
-    checkNotNull(content, "email must be provided");
-    checkNotNull(user, "email must be provided");
-    checkNotNull(product, "email must be provided");
+    checkNotNull(content, "content must be provided");
+    checkNotNull(user, "user must be provided");
+    checkNotNull(product, "product must be provided");
     checkArgument(
             content.length() >= 1 && content.length() <= 1000,
             "name length must be between 1 and 10 characters"

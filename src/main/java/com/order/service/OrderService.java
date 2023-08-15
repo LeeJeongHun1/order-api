@@ -45,7 +45,7 @@ public class OrderService {
         return success(orderDto);
     }
 
-    public OrderDto order(Long userId, OrderRequestDto orderRequestDto) {
+    public ApiResult<OrderDto> order(Long userId, OrderRequestDto orderRequestDto) {
         orderValidate(orderRequestDto);
         Order order = Order.of()
                 .user(new User(userId))
@@ -58,7 +58,7 @@ public class OrderService {
             OrderDetail savedOrderDetail = orderDetailRepository.save(orderDetail);
             savedOrder.getDetails().add(savedOrderDetail);
         }
-        return new OrderDto(savedOrder);
+        return success(new OrderDto(savedOrder));
     }
 
     private OrderDetail buildOrderDetail(Order order, OrderProductDto orderProduct) {
@@ -102,7 +102,15 @@ public class OrderService {
         }
     }
 
-    public void accept(Long orderId, Long userId) {
+    public ApiResult<Boolean> complete(Long orderId, Long orderDetailId, Long userId) {
+        OrderDetail orderDetail = orderDetailRepository.findByIdAndOrderId(orderDetailId, orderId)
+                .orElseThrow(() -> new NotFoundException("Could not found order info for " + orderId));
+        if (orderDetail.getState() == OrderDetail.State.REQUESTED) {
+            orderDetail.complete();
+        } else {
+            return success(false);
+        }
+        return success(true);
 
     }
 

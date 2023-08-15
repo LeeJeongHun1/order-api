@@ -1,15 +1,18 @@
 package com.order.service;
 
+import com.order.dto.order.OrderDetailDto;
 import com.order.dto.review.ReviewDto;
 import com.order.dto.review.ReviewReqDto;
-import com.order.entity.Order;
-import com.order.entity.Review;
+import com.order.entity.*;
 import com.order.exception.BadRequestException;
 import com.order.exception.NotFoundException;
+import com.order.repository.ProductRepository;
+import com.order.repository.order.OrderDetailRepository;
 import com.order.repository.order.OrderRepository;
 import com.order.repository.ReviewRepository;
 import com.order.utils.ApiUtils.ApiResult;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,27 +25,39 @@ import static com.order.utils.ApiUtils.success;
 @RequiredArgsConstructor
 public class ReviewService {
     private final ReviewRepository reviewRepository;
-    private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
+    private final ModelMapper modelMapper;
+    private final OrderDetailRepository orderDetailRepository;
 
-    public ApiResult<ReviewDto> review(Long orderId, Long userSeq, ReviewReqDto reviewReqDto) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new NotFoundException("Could not found order for " + orderId));
-//        if (order.getState() != Order.State.COMPLETED) {
-//            throw new BadRequestException(
-//                    String.format("Could not write review for order %d because state(REQUESTED) is not allowed", orderId));
-//        }
+    public ApiResult<ReviewDto> review(Long orderDetailId, Long userId, ReviewReqDto reviewReqDto) {
+        OrderDetailDto orderDetailDto = orderDetailRepository.findOrderDetailById(orderDetailId, userId)
+                .orElseThrow(() -> new NotFoundException("Could not found order for " + orderDetailId));
+        if (orderDetailDto.getState() != OrderDetail.State.COMPLETED) {
+            throw new BadRequestException(
+                    String.format("Could not write review for orderDetail %d because state(REQUESTED) is not allowed", orderDetailId));
+        }
         // 중복 리뷰
-//        if (Objects.nonNull(order.getReview())) {
-//            throw new BadRequestException(
-//                    String.format("Could not write review for order %d because have already written", orderId));
-//        }
+        if (Objects.nonNull(orderDetailDto.getReview())) {
+            throw new BadRequestException(
+                    String.format("Could not write review for orderDetail %d because have already written", orderDetailId));
+        }
+
         Review review = Review.builder()
-                .user(order.getUser())
-//                .product(order.getProduct())
+                .user(new User(userId))
+                .product(new Product(orderDetailDto.getProduct().getId()))
                 .content(reviewReqDto.getContent())
                 .build();
-        Review save = reviewRepository.save(review);
-        return success(new ReviewDto(save));
+        Review savedReview = reviewRepository.save(review);
+        orderDetailRepository.updateReview(orderDetailId, savedReview.getId());
+        increaseReviewCount(orderDetailDto.getProduct().getId());
+        return success(new ReviewDto(savedReview));
+    }
+
+
+    private void increaseReviewCount(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException("Could not found product for " + productId));
+        product.increaseReviewCount();
     }
 
 }
