@@ -5,12 +5,12 @@ import org.springframework.http.HttpStatus;
 
 public class ApiUtils {
 
-    public static <T> ApiResult<T> success(T response) {
-        return new ApiResult<>(true, response, null);
+    public static <T> ApiResult<T> success(T data) {
+        return new ApiResult<>(true, data, null);
     }
 
-    public static <T> ApiResult<T> success(T response, HttpHeaders httpHeaders) {
-        return new ApiResult<>(true, response, null);
+    public static <T> ApiResult<T> success(T data, HttpHeaders httpHeaders) {
+        return new ApiResult<>(true, data, null);
     }
 
     public static ApiResult<?> error(Throwable throwable, HttpStatus status) {
@@ -54,12 +54,12 @@ public class ApiUtils {
 
     public static class ApiResult<T> {
         private final boolean success;
-        private final T response;
+        private final T data;
         private final ApiError error;
 
-        private ApiResult(boolean success, T response, ApiError error) {
+        private ApiResult(boolean success, T data, ApiError error) {
             this.success = success;
-            this.response = response;
+            this.data = data;
             this.error = error;
         }
 
@@ -71,15 +71,15 @@ public class ApiUtils {
             return error;
         }
 
-        public T getResponse() {
-            return response;
+        public T getData() {
+            return data;
         }
 
         @Override
         public String toString() {
             return "ApiResult{" +
                     "success=" + success +
-                    ", response=" + response +
+                    ", data=" + data +
                     ", error=" + error +
                     '}';
         }

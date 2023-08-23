@@ -2,6 +2,7 @@ package com.order.orders;
 
 import com.order.dto.order.OrderDto;
 import com.order.dto.order.OrderRequestDto;
+import com.order.entity.OrderDetail;
 import com.order.security.CustomUser;
 import com.order.service.OrderService;
 import com.order.utils.ApiUtils.ApiResult;
@@ -19,10 +20,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
 import java.util.List;
-
-import static com.order.utils.ApiUtils.success;
 
 @RestController
 @RequiredArgsConstructor
@@ -68,31 +66,33 @@ public class OrderRestController {
         return orderService.order(customUser.getUserId(), orderRequestDto);
     }
 
-    @PatchMapping("/{id}/accept")
-    public void accept(
-            @AuthenticationPrincipal CustomUser customUser,
-            @PathVariable Long id) {
-    }
-
-    @PatchMapping("/{id}/reject")
-    public void reject(
-            @AuthenticationPrincipal CustomUser customUser,
-            @PathVariable Long id) {
-    }
-
-    @PatchMapping("/{id}/shipping")
-    public void shipping(
-            @AuthenticationPrincipal CustomUser customUser,
-            @PathVariable Long id) {
-    }
-
     @Secured(value = "ROLE_ADMIN")
-    @PatchMapping("/{id}/order-details/{orderDetailId}/complete")
-    public ApiResult<Boolean> complete(
-            @AuthenticationPrincipal CustomUser customUser,
+    @Operation(summary = "상품 주문 거절", description = "상품 주문 거절")
+    @PatchMapping("/{id}/order-details/{orderDetailId}/reject")
+    public ApiResult<Boolean> reject(
             @PathVariable Long id,
             @PathVariable Long orderDetailId
     ) {
-        return orderService.complete(id, orderDetailId, customUser.getUserId());
+        return orderService.accept(id, orderDetailId, OrderDetail.State.REJECT);
+    }
+
+    @Secured(value = "ROLE_ADMIN")
+    @Operation(summary = "상품 배송", description = "상품 배송")
+    @PatchMapping("/{id}/order-details/{orderDetailId}/shipping")
+    public ApiResult<Boolean> shipping(
+            @PathVariable Long id,
+            @PathVariable Long orderDetailId
+    ) {
+       return orderService.accept(id, orderDetailId, OrderDetail.State.SHIPPING);
+    }
+
+    @Secured(value = "ROLE_ADMIN")
+    @Operation(summary = "상품 주문 완료", description = "상품 주문 완료")
+    @PatchMapping("/{id}/order-details/{orderDetailId}/complete")
+    public ApiResult<Boolean> complete(
+            @PathVariable Long id,
+            @PathVariable Long orderDetailId
+    ) {
+        return orderService.accept(id, orderDetailId, OrderDetail.State.COMPLETED);
     }
 }

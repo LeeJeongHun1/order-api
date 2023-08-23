@@ -34,17 +34,38 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
 
+    /**
+     * 주문 목록
+     *
+     * @param userId
+     * @param pageable
+     * @return
+     */
     public ApiResult<List<OrderDto>> getOrders(Long userId, Pageable pageable) {
         List<OrderDto> list = orderRepository.findAllByUser(userId, pageable);
         return success(list);
     }
 
+    /**
+     * 주문 정보
+     *
+     * @param orderId
+     * @param userId
+     * @return
+     */
     public ApiResult<OrderDto> getOrder(Long orderId, Long userId) {
         OrderDto orderDto = orderRepository.findByIdAndUserId(orderId, userId)
                 .orElseThrow(() -> new NotFoundException("Could not found order for " + orderId));
         return success(orderDto);
     }
 
+    /**
+     * 상품 주문
+     *
+     * @param userId
+     * @param orderRequestDto
+     * @return
+     */
     public ApiResult<OrderDto> order(Long userId, OrderRequestDto orderRequestDto) {
         orderValidate(orderRequestDto);
         Order order = Order.of()
@@ -61,7 +82,16 @@ public class OrderService {
         return success(new OrderDto(savedOrder));
     }
 
-    private OrderDetail buildOrderDetail(Order order, OrderProductDto orderProduct) {
+    /**
+     * 주문 상세 builder
+     * 상품 가격 검증
+     * 상품 재고 차감
+     *
+     * @param order
+     * @param orderProduct
+     * @return
+     */
+    private synchronized OrderDetail buildOrderDetail(Order order, OrderProductDto orderProduct) {
         Product product = findProductById(orderProduct.getProductId());
         validateProductPrice(product, orderProduct);
 
@@ -76,6 +106,12 @@ public class OrderService {
                 .build();
     }
 
+    /**
+     * 상품 조회
+     *
+     * @param productId
+     * @return
+     */
     private Product findProductById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Could not find product for " + productId));
@@ -88,7 +124,12 @@ public class OrderService {
         }
     }
 
-    private synchronized void orderValidate(OrderRequestDto orderRequestDto) {
+    /**
+     * 주문 정보 검증
+     *
+     * @param orderRequestDto
+     */
+    private void orderValidate(OrderRequestDto orderRequestDto) {
         Double totalPrice = orderRequestDto.getOrderProducts().stream()
                 .mapToDouble(orderProduct -> {
                     Product product = findProductById(orderProduct.getProductId());
@@ -102,7 +143,14 @@ public class OrderService {
         }
     }
 
-    public ApiResult<Boolean> complete(Long orderId, Long orderDetailId, Long userId) {
+    /**
+     * 관리자가 주문 승인
+     *
+     * @param orderId
+     * @param orderDetailId
+     * @return
+     */
+    public ApiResult<Boolean> complete(Long orderId, Long orderDetailId) {
         OrderDetail orderDetail = orderDetailRepository.findByIdAndOrderId(orderDetailId, orderId)
                 .orElseThrow(() -> new NotFoundException("Could not found order info for " + orderId));
         if (orderDetail.getState() == OrderDetail.State.REQUESTED) {
@@ -111,6 +159,49 @@ public class OrderService {
             return success(false);
         }
         return success(true);
+    }
+
+    /**
+     * 주문 거절
+     *
+     * @param orderId
+     * @param orderDetailId
+     * @return
+     */
+    public ApiResult<Boolean> reject(Long orderId, Long orderDetailId) {
+        OrderDetail orderDetail = orderDetailRepository.findByIdAndOrderId(orderDetailId, orderId)
+                .orElseThrow(() -> new NotFoundException("Could not found order info for " + orderId));
+        if (orderDetail.getState() == OrderDetail.State.REQUESTED) {
+            orderDetail.reject("reject message");
+            return success(true);
+        } else {
+            return success(false);
+        }
+    }
+
+    /**
+     * 주문상태 변경
+     * @param orderId
+     * @param orderDetailId
+     * @param state
+     * @return
+     */
+    public ApiResult<Boolean> accept(Long orderId, Long orderDetailId, OrderDetail.State state) {
+        OrderDetail orderDetail = orderDetailRepository.findByIdAndOrderId(orderDetailId, orderId)
+                .orElseThrow(() -> new NotFoundException("Could not found order info for " + orderId));
+
+        if (orderDetail.getState() == OrderDetail.State.REQUESTED) {
+            if (state == OrderDetail.State.COMPLETED) {
+                orderDetail.complete();
+            } else if (state == OrderDetail.State.REJECT){
+                orderDetail.reject("reject message");
+            } else if (state == OrderDetail.State.SHIPPING) {
+                orderDetail.shipping();
+            }
+            return success(true);
+        } else {
+            return success(false);
+        }
 
     }
 

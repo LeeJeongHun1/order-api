@@ -29,6 +29,11 @@ public class UserDto {
     this.lastLoginAt = source.getLastLoginAt().orElse(null);
   }
 
+  public UserDto(String name, String email, int loginCount) {
+    this.name = name;
+    this.email = email;
+    this.loginCount = loginCount;
+  }
 
   @Override
   public String toString() {

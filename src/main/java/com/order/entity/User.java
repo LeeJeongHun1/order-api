@@ -33,104 +33,104 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @EntityListeners(AuditingEntityListener.class)
 public class User {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String name;
+    private String name;
 
-  @Email
-  private String email;
+    @Email
+    private String email;
 
-  private String passwd;
+    private String passwd;
 
-  @NotNull
-  @ColumnDefault("'0'")
-  private int loginCount;
+    @NotNull
+    @ColumnDefault("'0'")
+    private int loginCount;
 
-  @OneToMany(mappedBy = "user")
-  private List<Role> roles;
+    @OneToMany(mappedBy = "user")
+    private List<Role> roles;
 
-  @LastModifiedDate
-  private LocalDateTime lastLoginAt;
+    @LastModifiedDate
+    private LocalDateTime lastLoginAt;
 
-  @CreatedDate
-  @Column(nullable = false)
-  @ColumnDefault("current_timestamp()")
-  private LocalDateTime createAt;
+    @CreatedDate
+    @Column(nullable = false)
+    @ColumnDefault("current_timestamp()")
+    private LocalDateTime createAt;
 
-  public User(Long id) {
-    checkNotNull(id, "id must be provided");
-    this.id = id;
-  }
-
-  public User(Long id, String name, String email, String passwd, int loginCount, LocalDateTime lastLoginAt, LocalDateTime createAt) {
-    checkNotNull(email, "email must be provided");
-    checkArgument(isNotEmpty(name), "name must be provided");
-    this.id = id;
-    this.name = name;
-    this.email = email;
-    this.passwd = passwd;
-    this.loginCount = loginCount;
-    this.lastLoginAt = lastLoginAt;
-    this.createAt = createAt;
-  }
-
-  public User(Long id, String name, String email, String passwd, int loginCount) {
-    checkArgument(isNotEmpty(name), "name must be provided");
-    checkArgument(
-      name.length() >= 1 && name.length() <= 10,
-      "name length must be between 1 and 10 characters"
-    );
-    checkNotNull(email, "email must be provided");
-    checkNotNull(passwd, "password must be provided");
-
-    this.id = id;
-    this.name = name;
-    this.email = email;
-    this.passwd = passwd;
-    this.loginCount = loginCount;
-  }
-
-  public void login(PasswordEncoder passwordEncoder, String credentials) {
-    if (!passwordEncoder.matches(credentials, passwd)) {
-      throw new IllegalArgumentException("Bad credential");
+    public User(Long id) {
+        checkNotNull(id, "id must be provided");
+        this.id = id;
     }
-  }
 
-  public void afterLoginSuccess() {
-    loginCount++;
-    lastLoginAt = now();
-  }
+    public User(Long id, String name, String email, String passwd, int loginCount, LocalDateTime lastLoginAt, LocalDateTime createAt) {
+        checkNotNull(email, "email must be provided");
+        checkArgument(isNotEmpty(name), "name must be provided");
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.passwd = passwd;
+        this.loginCount = loginCount;
+        this.lastLoginAt = lastLoginAt;
+        this.createAt = createAt;
+    }
 
-  public Optional<LocalDateTime> getLastLoginAt() {
-    return ofNullable(lastLoginAt);
-  }
+    public User(Long id, String name, String email, String passwd, int loginCount) {
+        checkArgument(isNotEmpty(name), "name must be provided");
+        checkArgument(
+                name.length() >= 1 && name.length() <= 10,
+                "name length must be between 1 and 10 characters"
+        );
+        checkNotNull(email, "email must be provided");
+        checkNotNull(passwd, "password must be provided");
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    User user = (User) o;
-    return Objects.equals(id, user.id);
-  }
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.passwd = passwd;
+        this.loginCount = loginCount;
+    }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
-  }
+    public void login(PasswordEncoder passwordEncoder, String credentials) {
+        if (!passwordEncoder.matches(credentials, passwd)) {
+            throw new IllegalArgumentException("Bad credential");
+        }
+    }
 
-  @Override
-  public String toString() {
-    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-      .append("seq", id)
-      .append("name", name)
-      .append("email", email)
-      .append("password", "[PROTECTED]")
-      .append("loginCount", loginCount)
-      .append("lastLoginAt", lastLoginAt)
-      .append("createAt", createAt)
-      .toString();
-  }
+    public void afterLoginSuccess() {
+        loginCount++;
+        lastLoginAt = now();
+    }
+
+    public Optional<LocalDateTime> getLastLoginAt() {
+        return ofNullable(lastLoginAt);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("seq", id)
+                .append("name", name)
+                .append("email", email)
+                .append("password", "[PROTECTED]")
+                .append("loginCount", loginCount)
+                .append("lastLoginAt", lastLoginAt)
+                .append("createAt", createAt)
+                .toString();
+    }
 
 }

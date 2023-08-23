@@ -20,8 +20,8 @@ public class OrderDetail {
 
     public enum State {
         REQUESTED,
-        ACCEPTED,
         SHIPPING,
+        REJECT,
         COMPLETED
     }
 
@@ -45,7 +45,11 @@ public class OrderDetail {
     @Column(nullable = false)
     private State state;
 
+    private String requestMsg;
+    private String rejectMsg;
     private LocalDateTime completedAt;
+    private LocalDateTime rejectedAt;
+
     @CreatedDate
     private LocalDateTime createAt;
 
@@ -65,5 +69,14 @@ public class OrderDetail {
         this.completedAt = LocalDateTime.now();
     }
 
+    public void reject(String rejectMsg) {
+        this.state = State.REJECT;
+        this.rejectMsg = rejectMsg;
+        this.rejectedAt = LocalDateTime.now();
+    }
+
+    public void shipping() {
+        this.state = State.SHIPPING;
+    }
 }
 

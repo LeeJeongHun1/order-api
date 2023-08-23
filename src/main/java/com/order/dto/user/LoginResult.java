@@ -1,26 +1,22 @@
 package com.order.dto.user;
 
 import com.order.entity.User;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+@Getter
+@Setter
 public class LoginResult {
 
-  private final String token;
+  private String token;
 
-  private final UserDto user;
+  private UserDto user;
 
   public LoginResult(String token, User user) {
     this.token = token;
     this.user = new UserDto(user);
-  }
-
-  public String getToken() {
-    return token;
-  }
-
-  public UserDto getUser() {
-    return user;
   }
 
   @Override

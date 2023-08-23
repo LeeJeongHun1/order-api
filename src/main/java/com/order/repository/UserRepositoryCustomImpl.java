@@ -6,6 +6,7 @@ import com.order.entity.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.order.entity.QRole.role;
@@ -23,5 +24,14 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
                 .where(user.email.eq(email))
                 .fetchFirst()
         );
+    }
+
+    @Override
+    public void updateAfterLogin(Long userId) {
+        queryFactory.update(user)
+                .set(user.loginCount, user.loginCount.add(1))
+                .set(user.createAt, LocalDateTime.now())
+                .where(user.id.eq(userId))
+                .execute();
     }
 }

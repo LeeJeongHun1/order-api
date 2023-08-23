@@ -82,43 +82,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .setAuthentication(usernamePasswordAuthxToken);
 
             } catch (BadCredentialsException e) {
-                log.info("?????????????");
-//                responseWriter(response,  new UnauthorizedException("AUTH.TOKEN_INVALID"));
-                return;
+                throw new UnauthorizedException("Token is Invalid");
             } catch (JWTVerificationException e) {
-//                responseWriter(response,  new UnauthorizedException("AUTH.TOKEN_EXPIRED"));
-                return;
+                throw new UnauthorizedException("Token is Expired");
             }
         }
         filterChain.doFilter(request, response);
     }
-
-    /**
-     * Contoller내에서 인증유저와 익명유저 동시에 loginUser.userId를 사용할 수 있도록 처리
-     * (기존에는 익명유저가 loginUser가 null이라 loginUser.userId를 사용못함)
-     * @return
-     */
-//    private Authentication generateAnonymousAuthx() {
-//        UserDetails anonymousUser = CustomUser.Anonymous().build();
-//        return new AnonymousAuthenticationToken(
-//                        anonymousUser.getUsername(),
-//                        anonymousUser,
-//                        anonymousUser.getAuthorities()
-//                );
-//    }
-
-    /**
-     * jwt 토큰 유효성 검증 실패 시 response 응답 메소드.
-//     * @param response
-//     * @param customException
-     * @throws IOException
-     */
-//    private void responseWriter(HttpServletResponse response, CustomException customException) throws IOException {
-//        response.setContentType(APPLICATION_JSON_VALUE);
-//        response.setCharacterEncoding("utf-8");
-//        response.setStatus(customException.getHttpStatus().value());
-//
-//    }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
