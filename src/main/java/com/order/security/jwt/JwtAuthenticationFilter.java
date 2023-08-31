@@ -66,7 +66,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String username = decodedJWT.getSubject();
                 UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
 
-//                BearerTokenAuthenticationToken
                 UsernamePasswordAuthenticationToken usernamePasswordAuthxToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,

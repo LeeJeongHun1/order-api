@@ -1,7 +1,6 @@
 package com.order.repository.order;
 
 import com.order.dto.order.OrderDetailDto;
-import com.order.dto.order.OrderDto;
 import com.order.dto.product.ProductDto;
 import com.order.dto.review.ReviewDto;
 import com.order.entity.OrderDetail;
@@ -12,17 +11,10 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import static com.order.entity.QOrder.order;
 import static com.order.entity.QOrderDetail.orderDetail;
-import static com.order.entity.QProduct.product;
-import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.group.GroupBy.list;
 
 @RequiredArgsConstructor
 public class OrderDetailCustomRepositoryImpl implements OrderDetailCustomRepository {
@@ -33,31 +25,17 @@ public class OrderDetailCustomRepositoryImpl implements OrderDetailCustomReposit
         return Optional.ofNullable(
                 queryFactory.select(buildExpressionForOrderDetail())
                         .from(orderDetail)
-                        .innerJoin(orderDetail.order.user)
+                        .innerJoin(orderDetail.orders.user)
                         .leftJoin(orderDetail.review)
                         .innerJoin(orderDetail.product)
                         .where(
                                 orderDetail.id.eq(id),
-                                orderDetail.order.user.id.eq(userId)
+                                orderDetail.orders.user.id.eq(userId)
                         )
                         .fetchFirst()
         );
     }
 
-    public Optional<OrderDetail> findOrderDetailById2(Long id, Long userId) {
-        return Optional.ofNullable(
-                queryFactory.select(orderDetail)
-                        .from(orderDetail)
-                        .innerJoin(orderDetail.order.user)
-                        .leftJoin(orderDetail.review)
-                        .innerJoin(orderDetail.product)
-                        .where(
-                                orderDetail.id.eq(id),
-                                orderDetail.order.user.id.eq(userId)
-                        )
-                        .fetchFirst()
-        );
-    }
 
     @Override
     public void updateReview(Long orderDetailId, Long reviewId) {
@@ -70,7 +48,7 @@ public class OrderDetailCustomRepositoryImpl implements OrderDetailCustomReposit
     private QBean<OrderDetailDto> buildExpressionForOrderDetail() {
         return Projections.fields(OrderDetailDto.class,
                 orderDetail.id,
-                orderDetail.order.id.as("orderId"),
+                orderDetail.orders.id.as("orderId"),
                 Expressions.as(buildExpressionForProduct(), "product"),
                 Expressions.as(buildExpressionForReview(), "review"),
                 orderDetail.price,

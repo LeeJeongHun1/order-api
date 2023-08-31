@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
 @EntityListeners(AuditingEntityListener.class)
-public class Order {
+public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,30 +29,19 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)
     private List<OrderDetail> details = new ArrayList<>();
-
     private Double totalAmount;
-
-    private String requestMsg;
-    private String rejectMsg;
-    private LocalDateTime completedAt;
-    private LocalDateTime rejectedAt;
     @CreatedDate
     private LocalDateTime createAt;
 
 
     @Builder(builderClassName = "of", builderMethodName = "of")
-    public Order(Long id, User user, Double totalAmount, String requestMsg, String rejectMsg, LocalDateTime completedAt, LocalDateTime rejectedAt, LocalDateTime createAt) {
+    public Orders(Long id, User user, Double totalAmount, LocalDateTime createAt) {
         checkNotNull(user, "user must be provided");
         this.id = id;
         this.user = user;
         this.totalAmount = totalAmount;
-        this.requestMsg = requestMsg;
-        this.rejectMsg = rejectMsg;
-        this.completedAt = completedAt;
-        this.rejectedAt = rejectedAt;
         this.createAt = createAt;
     }
 }
-

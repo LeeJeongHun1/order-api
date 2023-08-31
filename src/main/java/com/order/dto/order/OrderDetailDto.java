@@ -3,16 +3,9 @@ package com.order.dto.order;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.order.dto.product.ProductDto;
 import com.order.dto.review.ReviewDto;
-import com.order.entity.Order;
 import com.order.entity.OrderDetail;
-import com.order.entity.Product;
-import com.order.entity.Review;
 import lombok.*;
-import org.hibernate.annotations.DynamicInsert;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -25,16 +18,25 @@ public class OrderDetailDto {
     private Long orderId;
     private ProductDto product;
     private ReviewDto review;
+
+    private String productName;
     private Double price;
     private Integer quantity;
     private OrderDetail.State state;
+
+    private String rejectMsg;
+
+    private LocalDateTime rejectedAt;
+
+    private LocalDateTime completedAt;
     private LocalDateTime createAt;
 
     @Builder(builderClassName = "of", builderMethodName = "of")
     public OrderDetailDto(OrderDetail orderDetail) {
         this.id = orderDetail.getId();
-        this.orderId = orderDetail.getOrder().getId();
+        this.orderId = orderDetail.getOrders().getId();
         this.product = new ProductDto(orderDetail.getProduct());
+        this.productName = orderDetail.getProductName();
         this.review = orderDetail.getReview() == null ? null : new ReviewDto(orderDetail.getReview());
         this.price = orderDetail.getPrice();
         this.quantity = orderDetail.getQuantity();

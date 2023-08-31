@@ -10,11 +10,9 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderRequestDto {
+public class OrderRejectDto {
 
     @NotNull
-    private List<OrderProductDto> orderProducts;
-    @NotNull
-    private Double totalAmount;
+    private String rejectMsg;
 
 }

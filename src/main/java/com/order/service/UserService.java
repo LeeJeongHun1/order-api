@@ -50,7 +50,6 @@ public class UserService {
                 customUser.getCreateAt());
         user.afterLoginSuccess();
         userRepository.save(user);
-//        userRepository.updateAfterLogin(customUser.getUserId());
         String accessToken = jwtProvider.createAccessToken(authentication);
         return new LoginResult(accessToken, user);
     }

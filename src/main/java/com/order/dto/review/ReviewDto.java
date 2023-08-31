@@ -1,5 +1,6 @@
 package com.order.dto.review;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.order.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import static org.springframework.beans.BeanUtils.copyProperties;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReviewDto {
 
   private Long id;
@@ -23,13 +25,6 @@ public class ReviewDto {
   private String content;
 
   private LocalDateTime createAt;
-
-//  public ReviewDto(Product source) {
-//    copyProperties(source, this);
-//
-//    this.details = source.getDetails().orElse(null);
-//  }
-
 
   public ReviewDto(Review review) {
     this.productId = review.getProduct().getId();

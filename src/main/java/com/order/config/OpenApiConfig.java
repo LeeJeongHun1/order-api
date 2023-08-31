@@ -29,21 +29,4 @@ public class OpenApiConfig {
                 .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
     }
 
-//    @Bean
-//    public GroupedOpenApi groupOpenApiV10() {
-//        String paths[] = {"/v2/**"};
-//        //String packagesToscan[] = {"test.org.springdoc.api.app68.api.user", "test.org.springdoc.api.app68.api.store"};
-//        String packagesToscan[] = {};
-//        return GroupedOpenApi.builder().group("Ohmoss-api v2.0").pathsToMatch(paths).packagesToScan(packagesToscan)
-//                .build();
-//    }
-//    @Bean
-//    public GroupedOpenApi groupOpenApiV11() {
-//        String paths[] = {"/v1.1/**"};
-//        //String packagesToscan[] = {"test.org.springdoc.api.app68.api.user", "test.org.springdoc.api.app68.api.store"};
-//        String packagesToscan[] = {};
-//        return GroupedOpenApi.builder().group("nbhd-api v1.1").pathsToMatch(paths).packagesToScan(packagesToscan)
-//                .build();
-//    }
-
 }

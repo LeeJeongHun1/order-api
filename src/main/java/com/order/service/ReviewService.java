@@ -26,16 +26,18 @@ import static com.order.utils.ApiUtils.success;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
-    private final ModelMapper modelMapper;
     private final OrderDetailRepository orderDetailRepository;
 
     public ApiResult<ReviewDto> review(Long orderDetailId, Long userId, ReviewReqDto reviewReqDto) {
         OrderDetailDto orderDetailDto = orderDetailRepository.findOrderDetailById(orderDetailId, userId)
                 .orElseThrow(() -> new NotFoundException("Could not found order for " + orderDetailId));
+
+        // 승인되지 않은 주문
         if (orderDetailDto.getState() != OrderDetail.State.COMPLETED) {
             throw new BadRequestException(
                     String.format("Could not write review for orderDetail %d because state(REQUESTED) is not allowed", orderDetailId));
         }
+
         // 중복 리뷰
         if (Objects.nonNull(orderDetailDto.getReview())) {
             throw new BadRequestException(

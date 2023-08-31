@@ -1,12 +1,11 @@
 package com.order.repository.order;
 
-import com.order.entity.Order;
 import com.order.entity.OrderDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long>, OrderDetailCustomRepository {
-    Optional<OrderDetail> findByIdAndOrderId(Long id, Long orderDetailId);
+    Optional<OrderDetail> findByIdAndOrdersId(Long id, Long orderDetailId);
 
 }

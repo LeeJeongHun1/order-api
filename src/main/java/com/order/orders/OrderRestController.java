@@ -1,6 +1,8 @@
 package com.order.orders;
 
+import com.order.dto.PageDto;
 import com.order.dto.order.OrderDto;
+import com.order.dto.order.OrderRejectDto;
 import com.order.dto.order.OrderRequestDto;
 import com.order.entity.OrderDetail;
 import com.order.security.CustomUser;
@@ -15,12 +17,15 @@ import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static com.order.utils.ApiUtils.success;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,11 +36,14 @@ public class OrderRestController {
 
     @Operation(summary = "주문 목록", description = "주문 목록")
     @GetMapping
-    public ApiResult<List<OrderDto>> getOrders(
+    public ResponseEntity<ApiResult<List<OrderDto>>> getOrders(
             @AuthenticationPrincipal CustomUser customUser,
-            @PageableDefault(sort = "createAt", direction = Sort.Direction.DESC)
+            @PageableDefault(sort = "createAt", direction = Sort.Direction.DESC, size = 5)
             @ParameterObject Pageable pageable) {
-        return orderService.getOrders(customUser.getUserId(), pageable);
+        PageDto<OrderDto> orders = orderService.getOrders(customUser.getUserId(), pageable);
+        return ResponseEntity.ok()
+                .headers(orders.getHeader())
+                .body(success(orders.getList()));
     }
 
     @Operation(summary = "주문 정보 조회", description = "주문 정보 조회")
@@ -53,8 +61,7 @@ public class OrderRestController {
             content = @Content(schema = @Schema(implementation = OrderRequestDto.class),
                     examples = @ExampleObject(
                             "{\n" +
-                                    "  \"requestMsg\": \"request message\",\n" +
-                                    "  \"orderPrice\": 0.0,\n" +
+                                    "  \"totalAmount\": 0.0,\n" +
                                     "  \"orderProducts\": [{ \"productId\": 1, \"quantity\": 1, \"price\": 1  },\n" +
                                     "          { \"productId\": 2, \"quantity\": 1, \"price\": 1.0  }]\n" +
                                     "}"
@@ -71,9 +78,10 @@ public class OrderRestController {
     @PatchMapping("/{id}/order-details/{orderDetailId}/reject")
     public ApiResult<Boolean> reject(
             @PathVariable Long id,
-            @PathVariable Long orderDetailId
+            @PathVariable Long orderDetailId,
+            @Valid @RequestBody OrderRejectDto orderRejectDto
     ) {
-        return orderService.accept(id, orderDetailId, OrderDetail.State.REJECT);
+        return orderService.reject(id, orderDetailId, orderRejectDto);
     }
 
     @Secured(value = "ROLE_ADMIN")
@@ -83,16 +91,16 @@ public class OrderRestController {
             @PathVariable Long id,
             @PathVariable Long orderDetailId
     ) {
-       return orderService.accept(id, orderDetailId, OrderDetail.State.SHIPPING);
+        return orderService.shipping(id, orderDetailId);
     }
 
-    @Secured(value = "ROLE_ADMIN")
-    @Operation(summary = "상품 주문 완료", description = "상품 주문 완료")
+    @Operation(summary = "상품 주문 확정", description = "상품 주문 확정")
     @PatchMapping("/{id}/order-details/{orderDetailId}/complete")
     public ApiResult<Boolean> complete(
             @PathVariable Long id,
             @PathVariable Long orderDetailId
     ) {
-        return orderService.accept(id, orderDetailId, OrderDetail.State.COMPLETED);
+        return orderService.complete(id, orderDetailId);
     }
+
 }

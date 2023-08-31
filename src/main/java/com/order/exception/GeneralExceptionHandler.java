@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,8 +33,6 @@ public class GeneralExceptionHandler {
         return new ResponseEntity<>(error(message, status), headers, status);
     }
 
-    // 필요한 경우 적절한 예외타입을 선언하고 newResponse 메소드를 통해 응답을 생성하도록 합니다.
-
     @ExceptionHandler({
             NoHandlerFoundException.class,
             NotFoundException.class
@@ -41,6 +40,14 @@ public class GeneralExceptionHandler {
     public ResponseEntity<?> handleNotFoundException(Exception e) {
         return newResponse(e, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler({
+            AccessDeniedException.class
+    })
+    public ResponseEntity<?> handleAccessDeniedException(Exception e) {
+        return newResponse("Access denied", HttpStatus.FORBIDDEN);
+    }
+
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<?> handleUnauthorizedException(Exception e) {
@@ -59,6 +66,7 @@ public class GeneralExceptionHandler {
         log.debug("Bad request exception occurred: {}", e.getMessage(), e);
         if (e instanceof MethodArgumentNotValidException) {
             return newResponse(
+                    ((MethodArgumentNotValidException) e).getBindingResult().getFieldErrors().get(0).getField() + ": " +
                     ((MethodArgumentNotValidException) e).getBindingResult().getAllErrors().get(0).getDefaultMessage(),
                     HttpStatus.BAD_REQUEST
             );

@@ -47,15 +47,11 @@ public class Product {
         this.id = id;
     }
 
-    public Product(String name, String details) {
-        this(null, name, 0, null);
-    }
-
     public Product(Long id, String name, Double price, Integer stock, int reviewCount, LocalDateTime createAt) {
         checkArgument(isNotEmpty(name), "name must be provided");
         checkArgument(
                 name.length() >= 1 && name.length() <= 100,
-                "name length must be between 1 and 50 characters"
+                "name length must be between 1 and 100 characters"
         );
         this.id = id;
         this.name = name;
@@ -66,27 +62,14 @@ public class Product {
     }
 
     public Product(Long id, String name, int reviewCount, LocalDateTime createAt) {
-        checkArgument(isNotEmpty(name), "name must be provided");
-        checkArgument(
-                name.length() >= 1 && name.length() <= 100,
-                "name length must be between 1 and 50 characters"
-        );
-//        checkArgument(
-//                isEmpty(details) || details.length() <= 1000,
-//                "details length must be less than 1000 characters"
-//        );
-
-        this.id = id;
-        this.name = name;
-        this.reviewCount = reviewCount;
-        this.createAt = defaultIfNull(createAt, now());
+        this(id, name, null, null, reviewCount, createAt);
     }
 
     public void setName(String name) {
         checkArgument(isNotEmpty(name), "name must be provided");
         checkArgument(
-                name.length() >= 1 && name.length() <= 50,
-                "name length must be between 1 and 50 characters"
+                name.length() >= 1 && name.length() <= 100,
+                "name length must be between 1 and 100 characters"
         );
 
         this.name = name;

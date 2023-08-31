@@ -30,13 +30,15 @@ public class OrderDetail {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+    private Orders orders;
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
     @OneToOne
     @JoinColumn(name = "review_id")
     private Review review;
+
+    private String productName;
     @Column(nullable = false)
     private Double price;
     @Column(nullable = false)
@@ -44,8 +46,6 @@ public class OrderDetail {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private State state;
-
-    private String requestMsg;
     private String rejectMsg;
     private LocalDateTime completedAt;
     private LocalDateTime rejectedAt;
@@ -54,10 +54,11 @@ public class OrderDetail {
     private LocalDateTime createAt;
 
     @Builder(builderClassName = "of", builderMethodName = "of")
-    public OrderDetail(Long id, Order order, Product product, Review review, Double price, Integer quantity, State state) {
+    public OrderDetail(Long id, Orders orders, Product product, Review review, Double price, Integer quantity, State state) {
         this.id = id;
-        this.order = order;
+        this.orders = orders;
         this.product = product;
+        this.productName = product.getName();
         this.review = review;
         this.price = price;
         this.quantity = quantity;

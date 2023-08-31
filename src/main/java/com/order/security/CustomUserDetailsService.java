@@ -41,21 +41,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         customUser.setPassword(user.getPasswd());
         customUser.setVerified(true);
 
-//        if (user.getSocialLogin() == null && user.getEmailLogin() == null)
-//            return customUser;
-
-//        if (user.getLoginType() == User.LoginType.Email && user.getEmailLogin() != null) {
-//        }
-//        else if (user.getLoginType() == User.LoginType.Social && user.getSocialLogin() != null) {
-//            customUser.setSocialLoginProvider(user.getSocialLogin().getProvider());
-//            customUser.setVerified(true);
-//        }
-//
-//        // 휴면 계정 상태 업데이트
-//        if (user.getIsDormant()) {
-//            dormantWithdrawalService.unsuspendUser(user.getId());
-//        }
-
         return customUser;
     }
 

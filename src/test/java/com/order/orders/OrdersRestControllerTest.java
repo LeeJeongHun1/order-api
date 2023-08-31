@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class OrderRestControllerTest {
+class OrdersRestControllerTest {
 
   private static final Map<Integer, Integer> productIdForOrderId = new HashMap<Integer, Integer>() {{
     put(1, 1);
